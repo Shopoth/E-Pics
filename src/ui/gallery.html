@@ -4,91 +4,79 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Gallery</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="gallery-page">
-  <div class="app-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1>E-Pics</h1>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
+  <div class="min-h-screen lg:flex">
+    <aside class="w-full lg:w-72 shrink-0 bg-slate-900 border-b border-slate-800 lg:border-b-0 lg:border-r">
+      <div class="px-6 py-8 border-b border-slate-800">
+        <h1 class="text-3xl font-semibold tracking-tight bg-gradient-to-r from-violet-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent">E-Pics</h1>
       </div>
-      <nav class="sidebar-nav">
-        <button class="nav-item active" data-view="all">
-          <span class="icon">📷</span> All Files
+      <nav class="flex flex-wrap items-stretch gap-2 p-4 lg:flex-col">
+        <button class="nav-item flex items-center gap-3 w-full rounded-2xl bg-slate-800 text-white ring-1 ring-violet-500/40 px-4 py-3 text-left text-sm font-medium transition hover:bg-slate-700" data-view="all">
+          <span class="text-lg">📷</span> All Files
         </button>
-        <button class="nav-item" data-view="favorites">
-          <span class="icon">⭐</span> Favorites
+        <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="favorites">
+          <span class="text-lg">⭐</span> Favorites
         </button>
-        <button class="nav-item" data-view="images">
-          <span class="icon">🖼️</span> Images
+        <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="images">
+          <span class="text-lg">🖼️</span> Images
         </button>
-        <button class="nav-item" data-view="videos">
-          <span class="icon">🎬</span> Videos
+        <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="videos">
+          <span class="text-lg">🎬</span> Videos
         </button>
       </nav>
-      <div class="sidebar-footer">
-        <button id="settingsBtn" class="nav-item">
-          <span class="icon">⚙️</span> Settings
+      <div class="mt-auto border-t border-slate-800 p-4 grid gap-2">
+        <button id="settingsBtn" class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white">
+          <span class="text-lg">⚙️</span> Settings
         </button>
-        <button id="logoutBtn" class="nav-item">
-          <span class="icon">🚪</span> Logout
+        <button id="logoutBtn" class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white">
+          <span class="text-lg">🚪</span> Logout
         </button>
       </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Top Bar -->
-      <div class="top-bar">
-        <div class="search-container">
-          <input type="text" id="searchInput" class="search-input" placeholder="Search by filename...">
-          <button id="searchBtn" class="btn-icon">🔍</button>
+    <main class="flex-1 bg-slate-950">
+      <div class="bg-slate-900 border-b border-slate-800 px-6 py-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div class="flex-1 flex gap-3">
+          <input type="text" id="searchInput" placeholder="Search by filename..." class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+          <button id="searchBtn" type="button" class="rounded-2xl bg-slate-800 px-4 py-3 text-lg text-slate-100 transition hover:bg-slate-700">🔍</button>
         </div>
 
-        <div class="top-bar-actions">
-          <select id="sortSelect" class="sort-select">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <select id="sortSelect" class="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20">
             <option value="recent">Recent</option>
             <option value="oldest">Oldest</option>
             <option value="name">Name (A-Z)</option>
             <option value="name-desc">Name (Z-A)</option>
           </select>
-
-          <button id="importBtn" class="btn btn-primary">
-            + Import Files
-          </button>
+          <button id="importBtn" type="button" class="rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">+ Import Files</button>
         </div>
       </div>
 
-      <!-- Gallery Grid -->
-      <div class="gallery-container">
-        <div id="galleryGrid" class="gallery-grid">
-          <!-- Files will be populated here -->
-        </div>
-        <div id="emptyState" class="empty-state">
-          <p>No files yet. Start by importing photos or videos!</p>
-          <button id="emptyImportBtn" class="btn btn-primary">Import Your First File</button>
+      <div class="p-6">
+        <div id="galleryGrid" class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"></div>
+
+        <div id="emptyState" class="hidden min-h-[20rem] flex-col items-center justify-center gap-5 rounded-3xl border border-dashed border-slate-700 bg-slate-900/80 p-10 text-center text-slate-300">
+          <p class="text-lg font-medium">No files yet. Start by importing photos or videos!</p>
+          <button id="emptyImportBtn" type="button" class="rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Import Your First File</button>
         </div>
       </div>
 
-      <!-- File Context Menu -->
-      <div id="contextMenu" class="context-menu hidden">
-        <button class="context-item" data-action="view">👁️ View</button>
-        <button class="context-item" data-action="favorite">⭐ Toggle Favorite</button>
-        <button class="context-item" data-action="export">💾 Export</button>
-        <button class="context-item delete" data-action="delete">🗑️ Delete</button>
+      <div id="contextMenu" class="hidden fixed z-50 min-w-[14rem] overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl shadow-black/60">
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="view">👁️ View</button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="favorite">⭐ Toggle Favorite</button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="export">💾 Export</button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-rose-400 transition hover:bg-slate-800" data-action="delete">🗑️ Delete</button>
       </div>
     </main>
   </div>
 
-  <!-- Import Progress Modal -->
-  <div id="importModal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Importing Files</h2>
-      <div id="importProgress" class="progress-container">
-        <!-- Progress items will be added here -->
-      </div>
-      <button id="closeImportModal" class="btn btn-primary hidden">Done</button>
+  <div id="importModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-2xl rounded-[2rem] border border-slate-800 bg-slate-950 p-8 shadow-2xl shadow-black/50">
+      <h2 class="text-2xl font-semibold text-slate-50">Importing Files</h2>
+      <div id="importProgress" class="mt-6 space-y-3 max-h-72 overflow-y-auto"></div>
+      <button id="closeImportModal" type="button" class="mt-6 hidden w-full rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Done</button>
     </div>
   </div>
 

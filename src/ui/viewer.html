@@ -4,45 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Viewer</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="viewer-page">
-  <div class="viewer-container">
-    <button id="backBtn" class="btn-icon back-btn">← Back</button>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
+  <div class="relative min-h-screen bg-slate-950">
+    <button id="backBtn" class="absolute top-5 left-5 z-20 rounded-full bg-black/60 px-4 py-3 text-2xl text-white transition hover:bg-black/80">←</button>
 
-    <div class="viewer-content">
-      <div id="imageContainer" class="media-container">
-        <img id="imageViewer" src="" alt="Viewing image">
+    <div class="flex min-h-[60vh] items-center justify-center p-8">
+      <div id="imageContainer" class="media-container max-w-[90%] max-h-[70vh] rounded-[2rem] overflow-hidden">
+        <img id="imageViewer" src="" alt="Viewing image" class="max-h-[70vh] w-full object-contain rounded-[2rem]" />
       </div>
-      <div id="videoContainer" class="media-container hidden">
-        <video id="videoViewer" controls>
-          <source src="" type="">
+      <div id="videoContainer" class="media-container hidden max-w-[90%] max-h-[70vh] rounded-[2rem] overflow-hidden">
+        <video id="videoViewer" controls class="max-h-[70vh] w-full rounded-[2rem] bg-black">
+          <source src="" type="" />
           Your browser does not support video playback.
         </video>
       </div>
     </div>
 
-    <div class="viewer-controls">
-      <div class="file-info">
-        <h3 id="fileName"></h3>
-        <p id="fileType"></p>
-        <p id="fileDate"></p>
+    <div class="border-t border-slate-800 bg-slate-900/80 px-6 py-6 lg:flex lg:items-center lg:justify-between lg:gap-6">
+      <div class="file-info space-y-1">
+        <h3 id="fileName" class="text-xl font-semibold text-slate-50"></h3>
+        <p id="fileType" class="text-sm text-slate-400"></p>
+        <p id="fileDate" class="text-sm text-slate-400"></p>
       </div>
 
-      <div class="control-buttons">
-        <button id="favoriteBtn" class="btn-icon">⭐</button>
-        <button id="exportBtn" class="btn btn-secondary">Export</button>
-        <button id="deleteBtn" class="btn btn-danger">Delete</button>
+      <div class="control-buttons mt-4 flex flex-wrap gap-3 lg:mt-0">
+        <button id="favoriteBtn" class="rounded-2xl bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">⭐</button>
+        <button id="exportBtn" class="rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Export</button>
+        <button id="deleteBtn" class="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-500">Delete</button>
       </div>
     </div>
 
-    <!-- Tag Editor -->
-    <div class="tag-section">
-      <h4>Tags</h4>
-      <div id="tagsList" class="tags-list"></div>
-      <div class="tag-input-group">
-        <input type="text" id="tagInput" placeholder="Add tag...">
-        <button id="addTagBtn" class="btn btn-small">Add</button>
+    <div class="tag-section rounded-[2rem] border border-slate-800 bg-slate-900/80 px-6 py-6 mx-6 mt-6">
+      <h4 class="text-lg font-semibold text-slate-50">Tags</h4>
+      <div id="tagsList" class="tags-list mt-4 flex flex-wrap gap-3"></div>
+      <div class="tag-input-group mt-5 flex flex-col gap-3 sm:flex-row">
+        <input type="text" id="tagInput" placeholder="Add tag..." class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+        <button id="addTagBtn" type="button" class="rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Add</button>
       </div>
     </div>
   </div>

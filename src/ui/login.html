@@ -4,45 +4,45 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Photo Vault Login</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="auth-header">
-        <h1>E-Pics</h1>
-        <p>Personal Photo & Video Vault</p>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
+  <div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="w-full max-w-md rounded-[2rem] border border-slate-800 bg-slate-900/95 p-10 shadow-[0_30px_80px_-30px_rgba(15,23,42,0.8)]">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-semibold tracking-tight bg-gradient-to-r from-violet-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent">E-Pics</h1>
+        <p class="mt-3 text-sm text-slate-400">Personal Photo & Video Vault</p>
       </div>
 
-      <div id="loginForm" class="auth-form">
-        <h2>Login</h2>
-        <div class="form-group">
-          <label for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter your password" required>
+      <div id="loginForm" class="space-y-6">
+        <h2 class="text-xl font-semibold text-slate-50">Login</h2>
+        <div class="space-y-3">
+          <label for="loginPassword" class="block text-sm font-medium text-slate-300">Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter your password" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
         </div>
-        <button id="loginBtn" class="btn btn-primary">Login</button>
-        <p class="form-hint">First time? Set a password to create your vault.</p>
-        <button id="switchToRegister" class="btn btn-secondary">Create New Vault</button>
-        <div id="loginError" class="error-message"></div>
+        <button id="loginBtn" type="button" class="w-full rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Login</button>
+        <p class="text-center text-sm text-slate-400">First time? Set a password to create your vault.</p>
+        <button id="switchToRegister" type="button" class="w-full rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Create New Vault</button>
+        <div id="loginError" class="min-h-[1.25rem] text-sm text-rose-400"></div>
       </div>
 
-      <div id="registerForm" class="auth-form hidden">
-        <h2>Create Your Vault</h2>
-        <div class="form-group">
-          <label for="registerPassword">Create Password</label>
-          <input type="password" id="registerPassword" placeholder="Choose a password" required>
-          <small>At least 4 characters</small>
+      <div id="registerForm" class="space-y-6 hidden">
+        <h2 class="text-xl font-semibold text-slate-50">Create Your Vault</h2>
+        <div class="space-y-3">
+          <label for="registerPassword" class="block text-sm font-medium text-slate-300">Create Password</label>
+          <input type="password" id="registerPassword" placeholder="Choose a password" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+          <p class="text-sm text-slate-500">At least 4 characters</p>
         </div>
-        <div class="form-group">
-          <label for="registerConfirm">Confirm Password</label>
-          <input type="password" id="registerConfirm" placeholder="Confirm password" required>
+        <div class="space-y-3">
+          <label for="registerConfirm" class="block text-sm font-medium text-slate-300">Confirm Password</label>
+          <input type="password" id="registerConfirm" placeholder="Confirm password" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
         </div>
-        <button id="registerBtn" class="btn btn-primary">Create Vault</button>
-        <button id="switchToLogin" class="btn btn-secondary">Back to Login</button>
-        <div id="registerError" class="error-message"></div>
+        <button id="registerBtn" type="button" class="w-full rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Create Vault</button>
+        <button id="switchToLogin" type="button" class="w-full rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Back to Login</button>
+        <div id="registerError" class="min-h-[1.25rem] text-sm text-rose-400"></div>
       </div>
 
-      <div id="loadingMessage" class="loading-message hidden">
+      <div id="loadingMessage" class="hidden text-center text-slate-400">
         <p>Initializing vault...</p>
       </div>
     </div>

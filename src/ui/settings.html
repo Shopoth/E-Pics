@@ -4,57 +4,52 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Settings</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="settings-page">
-  <div class="app-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <h1>E-Pics</h1>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
+  <div class="min-h-screen lg:flex">
+    <aside class="w-full lg:w-72 shrink-0 bg-slate-900 border-b border-slate-800 lg:border-b-0 lg:border-r">
+      <div class="px-6 py-8 border-b border-slate-800">
+        <h1 class="text-3xl font-semibold tracking-tight bg-gradient-to-r from-violet-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent">E-Pics</h1>
       </div>
-      <nav class="sidebar-nav">
-        <button id="backToGallery" class="nav-item">
-          <span class="icon">←</span> Back to Gallery
+      <nav class="p-4">
+        <button id="backToGallery" class="nav-item flex w-full items-center gap-3 rounded-2xl bg-slate-800 px-4 py-3 text-left text-sm font-medium text-slate-100 transition hover:bg-slate-700">
+          <span class="text-lg">←</span> Back to Gallery
         </button>
       </nav>
     </aside>
 
-    <!-- Main Content -->
-    <main class="main-content settings-content">
-      <div class="settings-container">
-        <h1>Settings</h1>
+    <main class="flex-1 bg-slate-950 p-6">
+      <div class="mx-auto max-w-3xl space-y-6">
+        <h1 class="text-3xl font-semibold text-slate-50">Settings</h1>
 
-        <!-- Password Section -->
-        <section class="settings-section">
-          <h2>Security</h2>
-          <div class="setting-item">
-            <label>Change Password</label>
-            <button id="changePasswordBtn" class="btn btn-secondary">Change Password</button>
+        <section class="rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6">
+          <h2 class="text-xl font-semibold text-slate-100">Security</h2>
+          <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <span class="text-sm text-slate-300">Change Password</span>
+            <button id="changePasswordBtn" type="button" class="rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Change Password</button>
           </div>
         </section>
 
-        <!-- Storage Section -->
-        <section class="settings-section">
-          <h2>Storage</h2>
-          <div class="setting-item">
-            <label>Vault Location:</label>
-            <p id="storagePath" class="storage-path"></p>
-          </div>
-          <div class="setting-item">
-            <label>
-              <input type="checkbox" id="thumbnailToggle">
+        <section class="rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6">
+          <h2 class="text-xl font-semibold text-slate-100">Storage</h2>
+          <div class="mt-5 space-y-4">
+            <div class="flex flex-col gap-2">
+              <span class="text-sm text-slate-300">Vault Location:</span>
+              <p id="storagePath" class="rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-sm text-slate-200 font-mono"></p>
+            </div>
+            <label class="inline-flex items-center gap-3 text-sm text-slate-200">
+              <input type="checkbox" id="thumbnailToggle" class="h-4 w-4 rounded border-slate-600 bg-slate-800 text-violet-500 focus:ring-violet-500" />
               Enable Thumbnails
             </label>
           </div>
         </section>
 
-        <!-- Theme Section -->
-        <section class="settings-section">
-          <h2>Appearance</h2>
-          <div class="setting-item">
-            <label for="themeSelect">Theme:</label>
-            <select id="themeSelect" class="form-select">
+        <section class="rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6">
+          <h2 class="text-xl font-semibold text-slate-100">Appearance</h2>
+          <div class="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <label for="themeSelect" class="text-sm text-slate-300">Theme:</label>
+            <select id="themeSelect" class="w-full max-w-xs rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20">
               <option value="dark">Dark</option>
               <option value="light">Light</option>
               <option value="auto">System</option>
@@ -62,39 +57,39 @@
           </div>
         </section>
 
-        <!-- About Section -->
-        <section class="settings-section">
-          <h2>About</h2>
-          <div class="setting-item">
+        <section class="rounded-[2rem] border border-slate-800 bg-slate-900/80 p-6">
+          <h2 class="text-xl font-semibold text-slate-100">About</h2>
+          <div class="mt-5 space-y-2 text-sm text-slate-300">
             <p>E-Pics v1.0.0</p>
-            <p class="text-muted">Personal Photo & Video Vault</p>
+            <p class="text-slate-500">Personal Photo & Video Vault</p>
           </div>
         </section>
       </div>
     </main>
   </div>
 
-  <!-- Change Password Modal -->
-  <div id="passwordModal" class="modal hidden">
-    <div class="modal-content">
-      <h2>Change Password</h2>
-      <div class="form-group">
-        <label for="currentPassword">Current Password</label>
-        <input type="password" id="currentPassword" placeholder="Enter current password">
+  <div id="passwordModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+    <div class="w-full max-w-lg rounded-[2rem] border border-slate-800 bg-slate-950 p-8 shadow-2xl shadow-black/50">
+      <h2 class="text-2xl font-semibold text-slate-50">Change Password</h2>
+      <div class="mt-6 space-y-5">
+        <div class="space-y-2">
+          <label for="currentPassword" class="block text-sm font-medium text-slate-300">Current Password</label>
+          <input type="password" id="currentPassword" placeholder="Enter current password" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+        </div>
+        <div class="space-y-2">
+          <label for="newPassword" class="block text-sm font-medium text-slate-300">New Password</label>
+          <input type="password" id="newPassword" placeholder="Enter new password" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+        </div>
+        <div class="space-y-2">
+          <label for="confirmNewPassword" class="block text-sm font-medium text-slate-300">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" placeholder="Confirm new password" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="newPassword">New Password</label>
-        <input type="password" id="newPassword" placeholder="Enter new password">
+      <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+        <button id="cancelPasswordBtn" type="button" class="w-full rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Cancel</button>
+        <button id="savePasswordBtn" type="button" class="w-full rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5">Save</button>
       </div>
-      <div class="form-group">
-        <label for="confirmNewPassword">Confirm New Password</label>
-        <input type="password" id="confirmNewPassword" placeholder="Confirm new password">
-      </div>
-      <div class="modal-actions">
-        <button id="cancelPasswordBtn" class="btn btn-secondary">Cancel</button>
-        <button id="savePasswordBtn" class="btn btn-primary">Save</button>
-      </div>
-      <div id="passwordError" class="error-message"></div>
+      <div id="passwordError" class="mt-4 min-h-[1.25rem] text-sm text-rose-400"></div>
     </div>
   </div>
 
