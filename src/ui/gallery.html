@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Pics - Gallery</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="gallery-page">
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>E-Pics</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="all">
+          <span class="icon">📷</span> All Files
+        </button>
+        <button class="nav-item" data-view="favorites">
+          <span class="icon">⭐</span> Favorites
+        </button>
+        <button class="nav-item" data-view="images">
+          <span class="icon">🖼️</span> Images
+        </button>
+        <button class="nav-item" data-view="videos">
+          <span class="icon">🎬</span> Videos
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="settingsBtn" class="nav-item">
+          <span class="icon">⚙️</span> Settings
+        </button>
+        <button id="logoutBtn" class="nav-item">
+          <span class="icon">🚪</span> Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="top-bar">
+        <div class="search-container">
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by filename...">
+          <button id="searchBtn" class="btn-icon">🔍</button>
+        </div>
+
+        <div class="top-bar-actions">
+          <select id="sortSelect" class="sort-select">
+            <option value="recent">Recent</option>
+            <option value="oldest">Oldest</option>
+            <option value="name">Name (A-Z)</option>
+            <option value="name-desc">Name (Z-A)</option>
+          </select>
+
+          <button id="importBtn" class="btn btn-primary">
+            + Import Files
+          </button>
+        </div>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="gallery-container">
+        <div id="galleryGrid" class="gallery-grid">
+          <!-- Files will be populated here -->
+        </div>
+        <div id="emptyState" class="empty-state">
+          <p>No files yet. Start by importing photos or videos!</p>
+          <button id="emptyImportBtn" class="btn btn-primary">Import Your First File</button>
+        </div>
+      </div>
+
+      <!-- File Context Menu -->
+      <div id="contextMenu" class="context-menu hidden">
+        <button class="context-item" data-action="view">👁️ View</button>
+        <button class="context-item" data-action="favorite">⭐ Toggle Favorite</button>
+        <button class="context-item" data-action="export">💾 Export</button>
+        <button class="context-item delete" data-action="delete">🗑️ Delete</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Import Progress Modal -->
+  <div id="importModal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Importing Files</h2>
+      <div id="importProgress" class="progress-container">
+        <!-- Progress items will be added here -->
+      </div>
+      <button id="closeImportModal" class="btn btn-primary hidden">Done</button>
+    </div>
+  </div>
+
+  <script src="js/gallery.js"></script>
+</body>
+</html>

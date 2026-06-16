@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Pics - Viewer</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="viewer-page">
+  <div class="viewer-container">
+    <button id="backBtn" class="btn-icon back-btn">← Back</button>
+
+    <div class="viewer-content">
+      <div id="imageContainer" class="media-container">
+        <img id="imageViewer" src="" alt="Viewing image">
+      </div>
+      <div id="videoContainer" class="media-container hidden">
+        <video id="videoViewer" controls>
+          <source src="" type="">
+          Your browser does not support video playback.
+        </video>
+      </div>
+    </div>
+
+    <div class="viewer-controls">
+      <div class="file-info">
+        <h3 id="fileName"></h3>
+        <p id="fileType"></p>
+        <p id="fileDate"></p>
+      </div>
+
+      <div class="control-buttons">
+        <button id="favoriteBtn" class="btn-icon">⭐</button>
+        <button id="exportBtn" class="btn btn-secondary">Export</button>
+        <button id="deleteBtn" class="btn btn-danger">Delete</button>
+      </div>
+    </div>
+
+    <!-- Tag Editor -->
+    <div class="tag-section">
+      <h4>Tags</h4>
+      <div id="tagsList" class="tags-list"></div>
+      <div class="tag-input-group">
+        <input type="text" id="tagInput" placeholder="Add tag...">
+        <button id="addTagBtn" class="btn btn-small">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/viewer.js"></script>
+</body>
+</html>
