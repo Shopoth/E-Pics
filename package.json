@@ -23,6 +23,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "package:win": "node scripts/build-installer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -30,6 +31,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^30.0.0",
+    "electron-packager": "^17.1.0",
+    "png-to-ico": "^3.0.1"
   }
 }
