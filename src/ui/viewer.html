@@ -4,48 +4,236 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Viewer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="stylesheet" href="css/tailwind-custom.css">
+  <link rel="stylesheet" href="css/icon-styles.css">
+  <style>
+    .glass-panel {
+      background: rgba(16, 20, 21, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .vignette-bottom {
+      background: linear-gradient(to top, rgba(16, 20, 21, 0.95) 0%, rgba(16, 20, 21, 0.3) 40%, transparent 100%);
+    }
+    .vignette-top {
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+    }
+    .immersive-ui {
+      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .ui-hidden {
+      opacity: 0 !important;
+      pointer-events: none;
+    }
+    .header-hidden {
+      transform: translateY(-100%);
+    }
+    .footer-hidden {
+      transform: translateY(100%);
+    }
+    body {
+      background-color: #000000;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
-  <div class="relative min-h-screen bg-slate-950">
-    <button id="backBtn" class="absolute top-5 left-5 z-20 rounded-full bg-black/60 px-4 py-3 text-2xl text-white transition hover:bg-black/80">←</button>
-
-    <div class="flex min-h-[60vh] items-center justify-center p-8">
-      <div id="imageContainer" class="media-container max-w-[90%] max-h-[70vh] rounded-[2rem] overflow-hidden">
-        <img id="imageViewer" src="" alt="Viewing image" class="max-h-[70vh] w-full object-contain rounded-[2rem]" />
-      </div>
-      <div id="videoContainer" class="media-container hidden max-w-[90%] max-h-[70vh] rounded-[2rem] overflow-hidden">
-        <video id="videoViewer" controls class="max-h-[70vh] w-full rounded-[2rem] bg-black">
-          <source src="" type="" />
-          Your browser does not support video playback.
-        </video>
-      </div>
+<body class="overflow-hidden select-none touch-none" id="body-container">
+  <div class="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden" id="app">
+    <!-- Main Media Container -->
+    <div class="absolute inset-0 z-0 flex items-center justify-center bg-black cursor-pointer" id="imageContainer" onclick="resetUITimer()">
+      <img alt="Media Viewer" class="max-w-full max-h-full w-auto h-auto object-contain transition-transform duration-700" id="imageViewer" src="" />
+    </div>
+    <!-- Placeholder for Video (Hidden by default) -->
+    <div class="hidden absolute inset-0 z-10 flex items-center justify-center bg-black" id="videoContainer">
+      <video class="max-w-full max-h-full w-full h-full object-contain" controls="" id="videoViewer" src=""></video>
     </div>
 
-    <div class="border-t border-slate-800 bg-slate-900/80 px-6 py-6 lg:flex lg:items-center lg:justify-between lg:gap-6">
-      <div class="file-info space-y-1">
-        <h3 id="fileName" class="text-xl font-semibold text-slate-50"></h3>
-        <p id="fileType" class="text-sm text-slate-400"></p>
-        <p id="fileDate" class="text-sm text-slate-400"></p>
-      </div>
+    <!-- Navigation Buttons -->
+    <button class="immersive-ui fixed left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center rounded-full glass-panel border border-white/10 text-slate-100 hover:bg-slate-700/40 transition-all active:scale-90" id="prevBtn">
+      <svg class="icon icon-large" aria-hidden="true"><use href="icons/icons.svg#chevron-left"></use></svg>
+    </button>
+    <button class="immersive-ui fixed right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 flex items-center justify-center rounded-full glass-panel border border-white/10 text-slate-100 hover:bg-slate-700/40 transition-all active:scale-90" id="nextBtn">
+      <svg class="icon icon-large" aria-hidden="true"><use href="icons/icons.svg#chevron-right"></use></svg>
+    </button>
 
-      <div class="control-buttons mt-4 flex flex-wrap gap-3 lg:mt-0">
-        <button id="favoriteBtn" class="rounded-2xl bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">⭐</button>
-        <button id="exportBtn" class="rounded-2xl border border-slate-700 bg-slate-800 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Export</button>
-        <button id="deleteBtn" class="rounded-2xl bg-rose-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-rose-500">Delete</button>
+    <!-- Top Navigation Bar -->
+    <header class="immersive-ui fixed top-0 left-0 w-full z-40 bg-black/80 backdrop-blur-md border-b border-white/5" id="header-nav">
+      <div class="flex justify-between items-center px-4 py-2 min-h-[56px]">
+        <div class="flex items-center gap-3">
+          <button class="w-10 h-10 flex items-center justify-center rounded-full text-slate-100 hover:bg-white/10 transition-colors active:scale-95" id="backBtn">
+            <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#back"></use></svg>
+          </button>
+          <div class="flex flex-col">
+            <div class="flex items-center gap-2">
+              <h1 class="text-sm md:text-base text-slate-100 truncate max-w-[180px] md:max-w-md" id="fileName">Image.jpg</h1>
+              <span class="px-1.5 py-0.5 rounded bg-slate-700 text-[10px] font-medium text-slate-300 uppercase tracking-wider" id="fileType">JPG</span>
+            </div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-widest" id="fileDate">Today</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <!-- Tags Section -->
+          <div class="hidden md:flex items-center gap-2 mr-4 bg-white/5 rounded-full pl-3 pr-1 py-1 border border-white/10" id="tagsContainer">
+            <div class="flex gap-1.5 no-scrollbar overflow-x-auto max-w-[200px]" id="tagsList"></div>
+            <div class="flex items-center ml-2 border-l border-white/10 pl-2">
+              <input class="bg-transparent border-none focus:ring-0 text-[11px] p-0 w-16 placeholder:text-slate-500" id="tagInput" placeholder="Add tag..." type="text"/>
+              <button class="w-6 h-6 flex items-center justify-center rounded-full text-slate-400 hover:text-violet-400 transition-colors" id="addTagBtn">
+                <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#close"></use></svg>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </header>
 
-    <div class="tag-section rounded-[2rem] border border-slate-800 bg-slate-900/80 px-6 py-6 mx-6 mt-6">
-      <h4 class="text-lg font-semibold text-slate-50">Tags</h4>
-      <div id="tagsList" class="tags-list mt-4 flex flex-wrap gap-3"></div>
-      <div class="tag-input-group mt-5 flex flex-col gap-3 sm:flex-row">
-        <input type="text" id="tagInput" placeholder="Add tag..." class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
-        <button id="addTagBtn" type="button" class="rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">Add</button>
+    <!-- Bottom Controls Overlay -->
+    <footer class="immersive-ui fixed bottom-0 left-0 w-full z-40" id="footer-controls">
+      <div class="vignette-bottom h-40 absolute inset-x-0 bottom-0 -z-10 pointer-events-none"></div>
+      <div class="flex flex-col items-center gap-4 px-6 pb-8">
+        <!-- Primary Action Bar -->
+        <div class="flex items-center justify-center gap-2 md:gap-8 px-4 md:px-6 py-2.5 rounded-2xl glass-panel border border-white/10 shadow-2xl">
+          <button class="flex flex-col items-center gap-1 min-w-[56px] group" id="favoriteBtn">
+            <svg class="icon icon-button text-slate-100 group-hover:text-amber-300 transition-colors" aria-hidden="true"><use href="icons/icons.svg#heart-outline"></use></svg>
+            <span class="text-[9px] font-bold uppercase tracking-tighter text-slate-400 group-hover:text-amber-300 transition-colors">Favorite</span>
+          </button>
+          <div class="w-px h-8 bg-white/10"></div>
+          <button class="flex flex-col items-center gap-1 min-w-[56px] group" id="exportBtn">
+            <svg class="icon icon-button text-slate-100 group-hover:text-violet-400 transition-colors" aria-hidden="true"><use href="icons/icons.svg#export"></use></svg>
+            <span class="text-[9px] font-bold uppercase tracking-tighter text-slate-400 group-hover:text-violet-400 transition-colors">Export</span>
+          </button>
+          <div class="w-px h-8 bg-white/10"></div>
+          <button class="flex flex-col items-center gap-1 min-w-[56px] group" id="deleteBtn">
+            <svg class="icon icon-button text-slate-100 group-hover:text-rose-400 transition-colors" aria-hidden="true"><use href="icons/icons.svg#trash"></use></svg>
+            <span class="text-[9px] font-bold uppercase tracking-tighter text-slate-400 group-hover:text-rose-400 transition-colors">Delete</span>
+          </button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="fixed bottom-32 left-1/2 -translate-x-1/2 opacity-0 transition-all duration-300 pointer-events-none z-50" id="toast">
+      <div class="glass-panel px-5 py-2.5 rounded-full border border-white/10 flex items-center gap-3 shadow-xl">
+        <svg class="icon icon-button text-violet-400" aria-hidden="true"><use href="icons/icons.svg#check"></use></svg>
+        <span class="text-sm text-slate-100" id="toast-text">Action completed</span>
       </div>
     </div>
   </div>
 
+  <script>
+    // Immersive UI auto-hide
+    let uiTimeout;
+    const UI_HIDE_DELAY = 2000;
+    const immersiveElements = document.querySelectorAll('.immersive-ui');
+    const header = document.getElementById('header-nav');
+    const footer = document.getElementById('footer-controls');
+
+    function hideUI() {
+      immersiveElements.forEach(el => el.classList.add('ui-hidden'));
+      header.classList.add('header-hidden');
+      footer.classList.add('footer-hidden');
+    }
+
+    function showUI() {
+      immersiveElements.forEach(el => el.classList.remove('ui-hidden'));
+      header.classList.remove('header-hidden');
+      footer.classList.remove('footer-hidden');
+      resetUITimer();
+    }
+
+    function resetUITimer() {
+      clearTimeout(uiTimeout);
+      if (header.classList.contains('header-hidden')) {
+        showUI();
+      }
+      uiTimeout = setTimeout(hideUI, UI_HIDE_DELAY);
+    }
+
+    // Event listeners for UI interaction
+    window.addEventListener('mousemove', resetUITimer);
+    window.addEventListener('touchstart', resetUITimer);
+    
+    window.addEventListener('keydown', (e) => {
+      // Arrow keys: navigate without waking UI
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevBtn = document.getElementById('prevBtn');
+        if (prevBtn) prevBtn.click();
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) nextBtn.click();
+        return;
+      }
+      
+      // F11: fullscreen
+      if (e.key === 'F11') {
+        e.preventDefault();
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {
+            alert('Fullscreen request failed');
+          });
+        } else {
+          document.exitFullscreen();
+        }
+        return;
+      }
+      
+      // Other keys: wake UI and handle special keys
+      resetUITimer();
+      if(e.key === 'Escape') {
+        document.getElementById('backBtn').click();
+      }
+    });
+
+    // Initial timer start
+    resetUITimer();
+
+    // Toast helper
+    function showToast(message, icon = 'check') {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = toast.querySelector('svg use');
+      toastText.innerText = message;
+      toastIcon.setAttribute('href', `icons/icons.svg#${icon}`);
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+        toast.classList.remove('opacity-100');
+      }, 2500);
+    }
+
+    // Double-click zoom for images
+    document.getElementById('imageViewer').addEventListener('click', (e) => {
+      const currentTime = new Date().getTime();
+      if (currentTime - (window.lastClickTime || 0) < 300) {
+        e.stopPropagation();
+        const img = e.target;
+        if (img.style.transform === 'scale(1.8)') {
+          img.style.transform = 'scale(1)';
+        } else {
+          img.style.transform = 'scale(1.8)';
+        }
+      }
+      window.lastClickTime = currentTime;
+      resetUITimer();
+    });
+
+    window.addEventListener('resize', showUI);
+    window.addEventListener('fullscreenchange', () => {
+      showUI();
+    });
+  </script>
+  
   <script src="js/viewer.js"></script>
 </body>
 </html>

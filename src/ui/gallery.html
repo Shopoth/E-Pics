@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Pics - Gallery</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/tailwind.css">
+  <link rel="stylesheet" href="css/tailwind-custom.css">
+  <link rel="stylesheet" href="css/icon-styles.css">
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
   <div class="min-h-screen lg:flex">
@@ -14,24 +16,24 @@
       </div>
       <nav class="flex flex-wrap items-stretch gap-2 p-4 lg:flex-col">
         <button class="nav-item flex items-center gap-3 w-full rounded-2xl bg-slate-800 text-white ring-1 ring-violet-500/40 px-4 py-3 text-left text-sm font-medium transition hover:bg-slate-700" data-view="all">
-          <span class="text-lg">📷</span> All Files
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#camera"></use></svg> All Files
         </button>
         <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="favorites">
-          <span class="text-lg">⭐</span> Favorites
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#heart-outline"></use></svg> Favorites
         </button>
         <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="images">
-          <span class="text-lg">🖼️</span> Images
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#image"></use></svg> Images
         </button>
         <button class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white" data-view="videos">
-          <span class="text-lg">🎬</span> Videos
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#video"></use></svg> Videos
         </button>
       </nav>
       <div class="mt-auto border-t border-slate-800 p-4 grid gap-2">
         <button id="settingsBtn" class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white">
-          <span class="text-lg">⚙️</span> Settings
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#settings"></use></svg> Settings
         </button>
         <button id="logoutBtn" class="nav-item flex items-center gap-3 w-full rounded-2xl px-4 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-slate-800 hover:text-white">
-          <span class="text-lg">🚪</span> Logout
+          <svg class="icon icon-nav" aria-hidden="true"><use href="icons/icons.svg#logout"></use></svg> Logout
         </button>
       </div>
     </aside>
@@ -40,7 +42,9 @@
       <div class="bg-slate-900 border-b border-slate-800 px-6 py-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="flex-1 flex gap-3">
           <input type="text" id="searchInput" placeholder="Search by filename..." class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
-          <button id="searchBtn" type="button" class="rounded-2xl bg-slate-800 px-4 py-3 text-lg text-slate-100 transition hover:bg-slate-700">🔍</button>
+          <button id="searchBtn" type="button" class="rounded-2xl bg-slate-800 px-4 py-3 text-lg text-slate-100 transition hover:bg-slate-700">
+            <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#search"></use></svg>
+          </button>
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -64,10 +68,18 @@
       </div>
 
       <div id="contextMenu" class="hidden fixed z-50 min-w-[14rem] overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl shadow-black/60">
-        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="view">👁️ View</button>
-        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="favorite">⭐ Toggle Favorite</button>
-        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="export">💾 Export</button>
-        <button class="context-item w-full px-4 py-3 text-left text-sm text-rose-400 transition hover:bg-slate-800" data-action="delete">🗑️ Delete</button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="view">
+          <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#view"></use></svg> View
+        </button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="favorite">
+          <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#heart-outline"></use></svg> Toggle Favorite
+        </button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-slate-200 transition hover:bg-slate-800" data-action="export">
+          <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#export"></use></svg> Export
+        </button>
+        <button class="context-item w-full px-4 py-3 text-left text-sm text-rose-400 transition hover:bg-slate-800" data-action="delete">
+          <svg class="icon icon-button" aria-hidden="true"><use href="icons/icons.svg#trash"></use></svg> Delete
+        </button>
       </div>
     </main>
   </div>

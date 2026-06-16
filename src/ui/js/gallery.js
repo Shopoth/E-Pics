@@ -1,6 +1,7 @@
 let allFiles = [];
 let currentFilter = 'all';
 let contextMenuTarget = null;
+let currentGalleryOrder = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
   const navItems = document.querySelectorAll('.nav-item[data-view]');
@@ -127,6 +128,8 @@ function displayGallery() {
     }
   });
 
+  currentGalleryOrder = filteredFiles.map(f => f.storedName);
+
   // Clear grid
   galleryGrid.innerHTML = '';
 
@@ -144,21 +147,27 @@ function displayGallery() {
   });
 }
 
+function iconSvg(name, extraClass = 'icon icon-button') {
+  return `<svg class="${extraClass}" aria-hidden="true"><use href="icons/icons.svg#${name}"></use></svg>`;
+}
+
 function createGalleryItem(file) {
   const item = document.createElement('div');
   item.className = 'gallery-item';
   item.dataset.stored = file.storedName;
   item.dataset.id = file.id;
 
-  const icon = file.type === 'image' ? '🖼️' : '🎬';
-  const favoriteIcon = file.isFavorite ? '⭐' : '';
+  const favoriteBadge = file.isFavorite
+    ? `<div class="gallery-item-favorite">${iconSvg('heart-filled', 'icon icon-button text-amber-300')}</div>`
+    : '';
 
   item.innerHTML = `
-    ${favoriteIcon ? `<div class="gallery-item-favorite">${favoriteIcon}</div>` : ''}
-    <div class="gallery-item-badge">${icon}</div>
-    <img class="gallery-item-thumbnail" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23374151' width='150' height='150'/%3E%3C/svg%3E" alt="${file.originalName}">
+    ${favoriteBadge}
+    <div class="gallery-item-thumb">
+      <img class="gallery-item-thumbnail" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Crect fill='%23000' width='300' height='300'/%3E%3C/svg%3E" alt="${file.originalName}">
+    </div>
     <div class="gallery-item-overlay">
-      <span style="font-size: 24px;">👁️</span>
+      ${iconSvg('view', 'icon icon-large text-slate-100')}
     </div>
   `;
 
@@ -221,7 +230,9 @@ async function importFiles(filePaths) {
       result.files.forEach(file => {
         const progressItem = document.createElement('div');
         progressItem.className = 'progress-item';
-        const status = file.status === 'success' ? '✓' : '✕';
+        const status = file.status === 'success'
+          ? iconSvg('check', 'icon icon-button text-emerald-400')
+          : iconSvg('close', 'icon icon-button text-rose-400');
         const statusClass = file.status === 'success' ? 'success' : 'error';
         progressItem.innerHTML = `
           <div class="progress-status ${statusClass}">${status}</div>
@@ -290,6 +301,7 @@ async function handleContextAction(action, storedName) {
 
 function viewFile(storedName) {
   sessionStorage.setItem('viewerStoredName', storedName);
+  sessionStorage.setItem('viewerOrder', JSON.stringify(currentGalleryOrder));
   window.electronAPI.navigate('viewer');
 }
 

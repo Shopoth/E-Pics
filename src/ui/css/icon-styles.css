@@ -1,0 +1,28 @@
+.icon {
+  display: inline-flex;
+  width: 1.2rem;
+  height: 1.2rem;
+  stroke: currentColor;
+  fill: none;
+  vertical-align: middle;
+}
+
+.icon-solid {
+  fill: currentColor;
+  stroke: none;
+}
+
+.icon-button {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.icon-nav {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.icon-large {
+  width: 1.5rem;
+  height: 1.5rem;
+}
