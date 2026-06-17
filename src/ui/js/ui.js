@@ -65,6 +65,40 @@
 
       document.addEventListener('keydown', keyHandler);
       return () => document.removeEventListener('keydown', keyHandler);
+    },
+
+    initTransientScrollbars() {
+      const scrollContainers = Array.from(document.querySelectorAll('.transient-scrollbar'));
+      const timeoutMap = new WeakMap();
+
+      function activateScrollbar(el) {
+        el.classList.add('scrollbar-active');
+        clearTimeout(timeoutMap.get(el));
+        timeoutMap.set(el, setTimeout(() => el.classList.remove('scrollbar-active'), 700));
+      }
+
+      function updateContainer(el) {
+        if (el.scrollHeight > el.clientHeight) {
+          el.classList.add('scrollable');
+        } else {
+          el.classList.remove('scrollable');
+          el.classList.remove('scrollbar-active');
+        }
+      }
+
+      scrollContainers.forEach(el => {
+        updateContainer(el);
+        el.addEventListener('scroll', () => {
+          if (el.scrollHeight > el.clientHeight) {
+            activateScrollbar(el);
+          }
+        });
+        window.addEventListener('resize', () => updateContainer(el));
+      });
     }
   };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    window.uiHelpers.initTransientScrollbars();
+  });
 })();

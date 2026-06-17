@@ -148,6 +148,50 @@ body {
   height: 100%;
 }
 
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.transient-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  -ms-overflow-style: none;
+  scrollbar-gutter: stable both-edges;
+}
+
+.transient-scrollbar::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.transient-scrollbar.scrollbar-active {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,0.55) transparent;
+}
+
+.transient-scrollbar.scrollbar-active::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.transient-scrollbar.scrollbar-active::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.transient-scrollbar.scrollbar-active::-webkit-scrollbar-thumb {
+  background-color: rgba(148,163,184,0.55);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+}
+
 .viewer-nav-button {
   background-color: rgba(15, 23, 42, 0.7);
   border-radius: 9999px;
@@ -163,6 +207,23 @@ body {
 
 /* Settings card spacing to increase separation between cards */
 .settings-card {
+  margin-bottom: 1rem;
+}
+
+/* Sticky utility fallback for missing Tailwind generated rule */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.sticky-nav {
+  background-color: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
   margin-bottom: 1rem;
 }
 
@@ -194,13 +255,6 @@ body {
 #deleteVaultBtn:focus-visible {
   outline: 3px solid rgba(220,38,38,0.12);
   outline-offset: 3px;
-}
-
-/* Focus styles for accessibility */
-.gallery-item:focus {
-  outline: 3px solid rgba(99,102,241,0.18);
-  outline-offset: 6px;
-  box-shadow: 0 8px 30px rgba(99,102,241,0.06);
 }
 
 .nav-item:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {

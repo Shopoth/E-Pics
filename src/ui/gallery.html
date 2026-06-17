@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="css/tailwind-custom.css">
   <link rel="stylesheet" href="css/icon-styles.css">
 </head>
-<body class="min-h-screen bg-slate-950 text-slate-100 font-sans">
-  <div class="min-h-screen lg:flex">
+<body class="h-screen overflow-hidden bg-slate-950 text-slate-100 font-sans">
+  <div class="h-screen lg:flex">
     <aside class="sidebar-sticky w-full lg:w-72 shrink-0 bg-slate-900 border-b border-slate-800 lg:border-b-0 lg:border-r">
       <div class="px-6 py-8 border-b border-slate-800">
         <h1 class="text-3xl font-semibold tracking-tight bg-gradient-to-r from-violet-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent">E-Pics</h1>
@@ -38,8 +38,10 @@
       </div>
     </aside>
 
-    <main class="flex-1 bg-slate-950 overflow-y-auto">
-      <div class="bg-slate-900 border-b border-slate-800 px-6 py-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <main class="flex flex-col flex-1 min-h-0 bg-slate-950 overflow-y-auto transient-scrollbar">
+
+      <nav class="sticky top-0 z-20 sticky-nav bg-slate-900 border-b border-slate-800 px-6 py-5">
+              <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div class="flex-1 flex gap-3">
           <input type="text" id="searchInput" placeholder="Search by filename..." class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
           <button id="searchBtn" type="button" class="rounded-2xl bg-slate-800 px-4 py-3 text-lg text-slate-100 transition hover:bg-slate-700">
@@ -57,6 +59,7 @@
           <button id="importBtn" type="button" class="rounded-2xl bg-gradient-to-r from-violet-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:-translate-y-0.5">+ Import Files</button>
         </div>
       </div>
+      </nav>
 
       <div class="p-6">
         <div id="galleryGrid" class="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"></div>
