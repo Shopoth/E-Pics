@@ -179,7 +179,7 @@
         e.preventDefault();
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(() => {
-            alert('Fullscreen request failed');
+            window.uiHelpers.showToast('Fullscreen request failed', 'error');
           });
         } else {
           document.exitFullscreen();
@@ -234,6 +234,7 @@
     });
   </script>
   
+  <script src="js/ui.js"></script>
   <script src="js/viewer.js"></script>
 </body>
 </html>

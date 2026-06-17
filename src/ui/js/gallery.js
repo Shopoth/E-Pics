@@ -156,6 +156,7 @@ function createGalleryItem(file) {
   item.className = 'gallery-item';
   item.dataset.stored = file.storedName;
   item.dataset.id = file.id;
+  item.tabIndex = 0;
 
   const favoriteBadge = file.isFavorite
     ? `<div class="gallery-item-favorite">${iconSvg('heart-filled', 'icon icon-button text-amber-300')}</div>`
@@ -173,6 +174,14 @@ function createGalleryItem(file) {
 
   item.addEventListener('click', () => {
     viewFile(file.storedName);
+  });
+
+  // Keyboard support: Enter/Space to open
+  item.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      viewFile(file.storedName);
+    }
   });
 
   // Load thumbnail
@@ -331,9 +340,9 @@ async function exportFile(storedName) {
   try {
     const result = await window.electronAPI.exportFile(storedName);
     if (result.success) {
-      alert(`File exported to:\n${result.path}`);
+      window.uiHelpers.showToast(`File exported to: ${result.path}`, 'success');
     } else {
-      alert(`Export failed: ${result.error}`);
+      window.uiHelpers.showToast(`Export failed: ${result.error}`, 'error');
     }
   } catch (error) {
     console.error('Error exporting file:', error);
@@ -347,11 +356,11 @@ async function deleteFile(storedName) {
 
   try {
     const result = await window.electronAPI.deleteFile(storedName);
-    if (result.success) {
-      await loadFiles();
-    } else {
-      alert(`Delete failed: ${result.error}`);
-    }
+      if (result.success) {
+        await loadFiles();
+      } else {
+        window.uiHelpers.showToast(`Delete failed: ${result.error}`, 'error');
+      }
   } catch (error) {
     console.error('Error deleting file:', error);
   }

@@ -297,9 +297,9 @@ async function exportFile(storedName) {
   try {
     const result = await window.electronAPI.exportFile(storedName);
     if (result.success) {
-      alert(`File exported to:\n${result.path}`);
+      window.uiHelpers.showToast(`File exported to: ${result.path}`, 'success');
     } else {
-      alert(`Export failed: ${result.error}`);
+      window.uiHelpers.showToast(`Export failed: ${result.error}`, 'error');
     }
   } catch (error) {
     console.error('Error exporting file:', error);
@@ -312,7 +312,7 @@ async function deleteFile(storedName) {
     if (result.success) {
       window.electronAPI.navigate('gallery');
     } else {
-      alert(`Delete failed: ${result.error}`);
+      window.uiHelpers.showToast(`Delete failed: ${result.error}`, 'error');
     }
   } catch (error) {
     console.error('Error deleting file:', error);

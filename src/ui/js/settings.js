@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   function closeModal() {
     if (passwordModal) {
       passwordModal.classList.add('hidden');
+      // cleanup focus trap if any
+      try { passwordModal._trapCleanup?.(); } catch (e) {}
       setTimeout(() => { try { lastFocusedElement?.focus(); } catch (e) {} }, 0);
     }
   }
@@ -40,6 +42,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (passwordModal) {
       lastFocusedElement = document.activeElement;
       passwordModal.classList.remove('hidden');
+      // trap focus and listen for escape
+      try { passwordModal._trapCleanup = window.uiHelpers.trapFocus(passwordModal); } catch (e) {}
+      passwordModal.addEventListener('ui:escape', () => { closeModal(); resetPasswordFields(); });
     }
   }
 
@@ -58,6 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function closeDeleteModal() {
     if (deleteVaultModal) {
       deleteVaultModal.classList.add('hidden');
+      try { deleteVaultModal._trapCleanup?.(); } catch (e) {}
       setTimeout(() => { try { lastFocusedElement?.focus(); } catch (e) {} }, 0);
     }
   }
@@ -67,6 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       deleteVaultModal.classList.remove('hidden');
       deleteConfirmText?.focus();
       lastFocusedElement = document.activeElement;
+      try { deleteVaultModal._trapCleanup = window.uiHelpers.trapFocus(deleteVaultModal); } catch (e) {}
+      deleteVaultModal.addEventListener('ui:escape', () => { closeDeleteModal(); resetDeleteFields(); });
     }
   }
 
@@ -79,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   function closeRenameModal() {
     if (renameVaultModal) {
       renameVaultModal.classList.add('hidden');
+      try { renameVaultModal._trapCleanup?.(); } catch (e) {}
       setTimeout(() => { try { lastFocusedElement?.focus(); } catch (e) {} }, 0);
     }
   }
@@ -88,6 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       lastFocusedElement = document.activeElement;
       renameVaultModal.classList.remove('hidden');
       renameVaultName?.focus();
+      try { renameVaultModal._trapCleanup = window.uiHelpers.trapFocus(renameVaultModal); } catch (e) {}
+      renameVaultModal.addEventListener('ui:escape', () => { closeRenameModal(); resetRenameFields(); });
     }
   }
 
@@ -185,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (result?.success) {
           closeModal();
           resetPasswordFields();
-          alert('Password changed successfully.');
+          window.uiHelpers.showToast('Password changed successfully.', 'success');
         } else {
           passwordError.textContent = result?.error || 'Unable to change password.';
         }
@@ -226,7 +237,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           closeRenameModal();
           resetRenameFields();
           vaultNameValue.textContent = newName;
-          alert('Vault name updated successfully.');
+          window.uiHelpers.showToast('Vault name updated successfully.', 'success');
         } else {
           renameVaultError.textContent = result?.error || 'Unable to update vault name.';
         }
@@ -279,7 +290,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const result = await window.electronAPI.deleteVault(currentPassword);
         if (result?.success) {
           closeDeleteModal();
-          alert('Vault deleted successfully. Returning to login.');
+          window.uiHelpers.showToast('Vault deleted successfully. Returning to login.', 'success');
           window.electronAPI.navigate('login');
         } else {
           deleteVaultError.textContent = result?.error || 'Unable to delete vault.';

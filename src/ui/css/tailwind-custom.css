@@ -195,3 +195,18 @@ body {
   outline: 3px solid rgba(220,38,38,0.12);
   outline-offset: 3px;
 }
+
+/* Focus styles for accessibility */
+.gallery-item:focus {
+  outline: 3px solid rgba(99,102,241,0.18);
+  outline-offset: 6px;
+  box-shadow: 0 8px 30px rgba(99,102,241,0.06);
+}
+
+.nav-item:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible {
+  outline: 3px solid rgba(99,102,241,0.12);
+  outline-offset: 3px;
+}
+
+/* Make gallery items show keyboard cursor */
+.gallery-item { cursor: pointer; }
