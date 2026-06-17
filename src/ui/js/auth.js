@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginPassword = document.getElementById('loginPassword');
   const vaultSelection = document.getElementById('vaultSelection');
   const vaultSelect = document.getElementById('vaultSelect');
+  const registerVaultName = document.getElementById('registerVaultName');
   const registerVaultPath = document.getElementById('registerVaultPath');
   const chooseVaultPathBtn = document.getElementById('chooseVaultPathBtn');
   const registerPassword = document.getElementById('registerPassword');
@@ -118,10 +119,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerBtn.textContent = 'Creating Vault...';
 
     try {
-      const result = await window.electronAPI.register(password, vaultPath || null);
+      const vaultName = registerVaultName.value.trim();
+    const result = await window.electronAPI.register(password, vaultPath || null, vaultName || null);
       if (result.success) {
         registerPassword.value = '';
         registerConfirm.value = '';
+        registerVaultName.value = '';
         registerVaultPath.value = '';
         registerError.textContent = '';
         // Navigate to gallery
@@ -152,6 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function loadVaultOptions(vaults) {
+  vaultSelect.innerHTML = '';
   const defaultOption = document.createElement('option');
   defaultOption.value = '';
   defaultOption.textContent = 'Default Vault';
@@ -160,7 +164,7 @@ function loadVaultOptions(vaults) {
   vaults.forEach(vault => {
     const option = document.createElement('option');
     option.value = vault.path;
-    option.textContent = vault.path;
+    option.textContent = vault.name || vault.path;
     vaultSelect.appendChild(option);
   });
 }

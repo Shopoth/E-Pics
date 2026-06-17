@@ -21,7 +21,10 @@ async function loadVaultConfig() {
     const data = await fs.readFile(VAULTS_CONFIG_PATH, 'utf8');
     const parsed = JSON.parse(data);
     knownVaults = Array.isArray(parsed)
-      ? parsed.filter(v => v && v.path).map(v => ({ path: path.resolve(v.path) }))
+      ? parsed.filter(v => v && v.path).map(v => ({
+          path: path.resolve(v.path),
+          name: typeof v.name === 'string' && v.name.trim() ? v.name.trim() : null
+        }))
       : [];
   } catch (error) {
     if (error.code === 'ENOENT') {
@@ -47,12 +50,21 @@ async function saveVaultConfig() {
   await fs.writeFile(VAULTS_CONFIG_PATH, JSON.stringify(knownVaults, null, 2), 'utf8');
 }
 
-async function addVaultPath(vaultPath) {
+async function addVaultPath(vaultPath, name = null) {
   const resolvedPath = path.resolve(vaultPath);
-  if (!knownVaults.some(v => v.path === resolvedPath)) {
-    knownVaults.push({ path: resolvedPath });
-    await saveVaultConfig();
+  const existing = knownVaults.find(v => v.path === resolvedPath);
+  const normalizedName = typeof name === 'string' && name.trim() ? name.trim() : null;
+
+  if (existing) {
+    if (normalizedName && existing.name !== normalizedName) {
+      existing.name = normalizedName;
+      await saveVaultConfig();
+    }
+    return;
   }
+
+  knownVaults.push({ path: resolvedPath, name: normalizedName });
+  await saveVaultConfig();
 }
 
 async function initializeVaultManagers(vaultPath) {
@@ -125,7 +137,7 @@ function createMenu() {
 }
 
 // IPC Handlers
-ipcMain.handle('auth:register', async (event, password, vaultPath) => {
+ipcMain.handle('auth:register', async (event, password, vaultPath, vaultName) => {
   try {
     const pathToUse = path.resolve(vaultPath || VAULT_ROOT);
     await ensureVaultDirectory(pathToUse);
@@ -137,7 +149,7 @@ ipcMain.handle('auth:register', async (event, password, vaultPath) => {
     }
 
     await passwordManager.setPassword(password);
-    await addVaultPath(pathToUse);
+    await addVaultPath(pathToUse, vaultName);
     isAuthenticated = true;
     return { success: true };
   } catch (error) {

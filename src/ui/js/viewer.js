@@ -1,6 +1,7 @@
 let currentFile = null;
 let allFiles = [];
 let viewerOrder = [];
+let currentObjectUrl = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const backBtn = document.getElementById('backBtn');
@@ -158,21 +159,50 @@ async function displayFile() {
     if (result.success) {
       const imageContainer = document.getElementById('imageContainer');
       const videoContainer = document.getElementById('videoContainer');
+      const img = document.getElementById('imageViewer');
+      const video = document.getElementById('videoViewer');
 
-      if (currentFile.type === 'image') {
-        const img = document.getElementById('imageViewer');
+      const isImage = currentFile.type === 'image' || result.mimeType?.startsWith('image/');
+      const isVideo = currentFile.type === 'video' || result.mimeType?.startsWith('video/');
+
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+
+      if (isImage) {
+        video.pause();
+        video.src = '';
         img.src = `data:${result.mimeType};base64,${result.data}`;
-        console.log('Image set, src length:', img.src.length);
+        img.style.transform = 'scale(1)';
         imageContainer.classList.remove('hidden');
         videoContainer.classList.add('hidden');
-      } else if (currentFile.type === 'video') {
-        const video = document.getElementById('videoViewer');
-        const source = video.querySelector('source');
-        source.src = `data:${result.mimeType};base64,${result.data}`;
-        source.type = result.mimeType;
+      } else if (isVideo) {
+        img.src = '';
+        img.style.transform = 'scale(1)';
+        video.pause();
+
+        const binaryString = atob(result.data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: result.mimeType });
+        currentObjectUrl = URL.createObjectURL(blob);
+
+        video.src = currentObjectUrl;
+        video.currentTime = 0;
         video.load();
         videoContainer.classList.remove('hidden');
         imageContainer.classList.add('hidden');
+      } else {
+        console.warn('Unknown media type, defaulting to image viewer');
+        video.pause();
+        video.src = '';
+        img.src = `data:${result.mimeType};base64,${result.data}`;
+        imageContainer.classList.remove('hidden');
+        videoContainer.classList.add('hidden');
       }
 
       updateNavButtons();
