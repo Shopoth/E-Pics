@@ -33,7 +33,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Form switching
-  switchToRegister.addEventListener('click', () => {
+  switchToRegister.addEventListener('click', async () => {
+    const hasPassword = await window.electronAPI.hasPassword();
+    if (hasPassword) {
+      loginError.textContent = 'Vault already exists. Please login instead.';
+      return;
+    }
     loginForm.classList.add('hidden');
     registerForm.classList.remove('hidden');
     loginError.textContent = '';

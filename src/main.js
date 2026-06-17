@@ -71,6 +71,11 @@ function createMenu() {
 // IPC Handlers
 ipcMain.handle('auth:register', async (event, password) => {
   try {
+    const hasPassword = await passwordManager.hasPassword();
+    if (hasPassword) {
+      return { success: false, error: 'A vault already exists. Please login instead.' };
+    }
+
     await passwordManager.setPassword(password);
     isAuthenticated = true;
     return { success: true };
