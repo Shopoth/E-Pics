@@ -160,3 +160,38 @@ body {
   padding: 1.25rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
 }
+
+/* Settings card spacing to increase separation between cards */
+.settings-card {
+  margin-bottom: 1rem;
+}
+
+/* Sticky sidebar for large screens */
+.sidebar-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  align-self: flex-start;
+  overflow: auto;
+}
+
+/* Delete button hover / active styles */
+#deleteVaultBtn {
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+#deleteVaultBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.18);
+  background-color: rgba(220,38,38,0.12) !important;
+}
+
+#deleteVaultBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.12);
+}
+
+#deleteVaultBtn:focus-visible {
+  outline: 3px solid rgba(220,38,38,0.12);
+  outline-offset: 3px;
+}

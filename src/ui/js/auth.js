@@ -26,6 +26,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       registerForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
       vaultSelection.classList.remove('hidden');
+      // Ensure input is enabled and focused
+      loginPassword.disabled = false;
+      try { loginPassword.focus(); } catch (e) {}
     } else {
       loginForm.classList.add('hidden');
       registerForm.classList.remove('hidden');
@@ -39,6 +42,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   } finally {
     loadingMessage.classList.add('hidden');
   }
+
+  // Defensive: make sure the login input is always focusable and accepts clicks
+  try {
+    loginPassword.disabled = false;
+    loginPassword.tabIndex = 0;
+    loginPassword.addEventListener('click', () => {
+      try { loginPassword.focus(); } catch (e) {}
+    });
+  } catch (e) {}
 
   // Form switching
   switchToRegister.addEventListener('click', async () => {
@@ -151,6 +163,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   vaultSelect.addEventListener('change', () => {
     loginError.textContent = '';
+    // re-enable input when vault changes
+    try { loginPassword.disabled = false; } catch (e) {}
   });
 });
 

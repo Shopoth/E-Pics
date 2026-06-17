@@ -359,6 +359,81 @@ ipcMain.handle('settings:getStoragePath', async () => {
   return { success: true, path: currentVaultRoot || VAULT_ROOT };
 });
 
+ipcMain.handle('settings:getCurrentVaultInfo', async () => {
+  try {
+    const vault = knownVaults.find(v => path.resolve(v.path) === currentVaultRoot);
+    return {
+      success: true,
+      path: currentVaultRoot,
+      name: vault?.name || null
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('vault:rename', async (event, currentPassword, newName) => {
+  try {
+    if (!isAuthenticated) {
+      throw new Error('Not authenticated');
+    }
+
+    if (!newName || typeof newName !== 'string' || !newName.trim()) {
+      return { success: false, error: 'Vault name cannot be empty.' };
+    }
+
+    await metadataManager.loadMetadata();
+    const valid = await passwordManager.verifyPassword(currentPassword);
+    if (!valid) {
+      return { success: false, error: 'Current password is incorrect.' };
+    }
+
+    const normalized = newName.trim();
+    const vaultIndex = knownVaults.findIndex(v => path.resolve(v.path) === currentVaultRoot);
+    if (vaultIndex === -1) {
+      return { success: false, error: 'Current vault not found.' };
+    }
+
+    knownVaults[vaultIndex].name = normalized;
+    await saveVaultConfig();
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
+ipcMain.handle('vault:delete', async (event, currentPassword) => {
+  try {
+    if (!isAuthenticated) {
+      throw new Error('Not authenticated');
+    }
+
+    await metadataManager.loadMetadata();
+    const valid = await passwordManager.verifyPassword(currentPassword);
+    if (!valid) {
+      return { success: false, error: 'Current password is incorrect.' };
+    }
+
+    const currentPath = path.resolve(currentVaultRoot);
+    const vaultIndex = knownVaults.findIndex(v => path.resolve(v.path) === currentPath);
+    if (vaultIndex !== -1) {
+      knownVaults.splice(vaultIndex, 1);
+      await saveVaultConfig();
+    }
+
+    isAuthenticated = false;
+    metadataManager = null;
+    fileHandler = null;
+    passwordManager = null;
+    currentVaultRoot = VAULT_ROOT;
+
+    await fs.rm(currentPath, { recursive: true, force: true });
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+});
+
 ipcMain.handle('files:pickDirectory', async (event) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory']

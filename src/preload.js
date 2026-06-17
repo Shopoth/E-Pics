@@ -6,6 +6,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   login: (password, vaultPath) => ipcRenderer.invoke('auth:login', password, vaultPath),
   hasPassword: () => ipcRenderer.invoke('auth:hasPassword'),
   getVaults: () => ipcRenderer.invoke('vaults:getList'),
+  getCurrentVaultInfo: () => ipcRenderer.invoke('settings:getCurrentVaultInfo'),
+  renameVault: (currentPassword, newName) => ipcRenderer.invoke('vault:rename', currentPassword, newName),
+  deleteVault: (currentPassword) => ipcRenderer.invoke('vault:delete', currentPassword),
 
   // Files
   importFiles: (filePaths) => ipcRenderer.invoke('files:import', filePaths),
