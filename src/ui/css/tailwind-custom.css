@@ -69,6 +69,16 @@
   opacity: 1;
 }
 
+.nav-item.active {
+  background-color: #363f5c;
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+}
+
+.nav-item.active:hover {
+  background-color: #3b436a;
+}
+
 .gallery-item-favorite {
   position: absolute;
   right: 0.75rem;

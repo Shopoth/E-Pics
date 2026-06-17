@@ -50,3 +50,5 @@ Thumbs.db
 
 # Vault or local storage
 .photohider
+# text save
+prompts.txt

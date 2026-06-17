@@ -18,14 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const closeImportModal = document.getElementById('closeImportModal');
 
   // Load files on startup
+  updateActiveTab();
   await loadFiles();
 
   // Navigation
   navItems.forEach(item => {
     item.addEventListener('click', () => {
-      navItems.forEach(n => n.classList.remove('active'));
-      item.classList.add('active');
       currentFilter = item.dataset.view;
+      updateActiveTab();
       displayGallery();
     });
   });
@@ -214,6 +214,13 @@ async function openFilePicker() {
   } catch (error) {
     console.error('Error picking files:', error);
   }
+}
+
+function updateActiveTab() {
+  const navItems = document.querySelectorAll('.nav-item[data-view]');
+  navItems.forEach(item => {
+    item.classList.toggle('active', item.dataset.view === currentFilter);
+  });
 }
 
 async function importFiles(filePaths) {
