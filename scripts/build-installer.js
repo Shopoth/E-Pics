@@ -9,7 +9,6 @@ const outDir = path.resolve(__dirname, "..", "dist");
 const iconPngPath = path.resolve(__dirname, "..", "assets", "icons.png");
 const iconPngAltPath = path.resolve(__dirname, "..", "assets", "icon.png");
 const iconIcoPath = path.resolve(__dirname, "..", "assets", "icons.ico");
-const iconOption = fs.existsSync(iconIcoPath) ? iconIcoPath : undefined;
 
 function findMakensis() {
   if (process.platform !== "win32") {
@@ -78,7 +77,7 @@ async function main() {
 
   const iconFile = await buildIco();
   if (!iconFile) {
-    console.warn("Warning: No icon found at assets/icons.png or assets/icons.ico. Packaging will continue without a custom icon.");
+    console.warn("Warning: No icon found at assets/icons.png, assets/icon.png, or assets/icons.ico. Packaging will continue without a custom icon.");
   }
 
   const appPaths = await packager({
@@ -98,25 +97,8 @@ async function main() {
       ProductVersion: pkg.version,
     },
     icon: iconFile,
-    dir: path.resolve(__dirname, ".."),
-    out: outDir,
-    overwrite: true,
-    platform: "win32",
-    arch: "x64",
-    name: appName,
-    executableName: appName,
-    appVersion: pkg.version,
-    win32metadata: {
-      CompanyName: pkg.author || "SHOPOTH",
-      FileDescription: "E-Pics secure photo and video vault",
-      OriginalFilename: `${appName}.exe`,
-      ProductName: appName,
-      ProductVersion: pkg.version,
-    },
-    icon: iconOption,
     ignore: [
       /^\/dist($|\/)/,
-
       /^\/scripts($|\/)/,
       /^\/\.git($|\/)/,
       /^\/package-lock\.json$/,
