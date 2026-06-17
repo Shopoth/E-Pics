@@ -7,21 +7,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const switchToRegister = document.getElementById('switchToRegister');
   const switchToLogin = document.getElementById('switchToLogin');
   const loginPassword = document.getElementById('loginPassword');
+  const vaultSelection = document.getElementById('vaultSelection');
+  const vaultSelect = document.getElementById('vaultSelect');
+  const registerVaultPath = document.getElementById('registerVaultPath');
+  const chooseVaultPathBtn = document.getElementById('chooseVaultPathBtn');
   const registerPassword = document.getElementById('registerPassword');
   const registerConfirm = document.getElementById('registerConfirm');
   const loginError = document.getElementById('loginError');
   const registerError = document.getElementById('registerError');
 
-  // Check if password already exists
+  // Check vaults and load vault list
   loadingMessage.classList.remove('hidden');
   try {
-    const hasPassword = await window.electronAPI.hasPassword();
-    if (hasPassword) {
+    const vaults = await window.electronAPI.getVaults();
+    loadVaultOptions(vaults);
+    if (vaults.length > 0) {
       registerForm.classList.add('hidden');
       loginForm.classList.remove('hidden');
+      vaultSelection.classList.remove('hidden');
     } else {
       loginForm.classList.add('hidden');
       registerForm.classList.remove('hidden');
+      vaultSelection.classList.add('hidden');
     }
   } catch (error) {
     loginError.textContent = 'Unable to initialize vault. Please restart the app.';
@@ -34,11 +41,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Form switching
   switchToRegister.addEventListener('click', async () => {
-    const hasPassword = await window.electronAPI.hasPassword();
-    if (hasPassword) {
-      loginError.textContent = 'Vault already exists. Please login instead.';
-      return;
-    }
     loginForm.classList.add('hidden');
     registerForm.classList.remove('hidden');
     loginError.textContent = '';
@@ -53,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Login handler
   loginBtn.addEventListener('click', async () => {
     const password = loginPassword.value.trim();
+    const selectedVault = vaultSelect.value;
     if (!password) {
       loginError.textContent = 'Please enter your password';
       return;
@@ -62,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loginBtn.textContent = 'Logging in...';
 
     try {
-      const result = await window.electronAPI.login(password);
+      const result = await window.electronAPI.login(password, selectedVault || null);
       if (result.success) {
         loginPassword.value = '';
         loginError.textContent = '';
@@ -80,9 +83,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Register handler
+  chooseVaultPathBtn.addEventListener('click', async () => {
+    try {
+      const result = await window.electronAPI.pickDirectory();
+      if (result.success) {
+        registerVaultPath.value = result.path;
+      }
+    } catch (error) {
+      console.error('Error selecting vault folder:', error);
+    }
+  });
+
   registerBtn.addEventListener('click', async () => {
     const password = registerPassword.value.trim();
     const confirm = registerConfirm.value.trim();
+    const vaultPath = registerVaultPath.value.trim();
 
     if (!password) {
       registerError.textContent = 'Please enter a password';
@@ -103,10 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerBtn.textContent = 'Creating Vault...';
 
     try {
-      const result = await window.electronAPI.register(password);
+      const result = await window.electronAPI.register(password, vaultPath || null);
       if (result.success) {
         registerPassword.value = '';
         registerConfirm.value = '';
+        registerVaultPath.value = '';
         registerError.textContent = '';
         // Navigate to gallery
         await window.electronAPI.navigate('gallery');
@@ -129,4 +145,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   registerConfirm.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') registerBtn.click();
   });
+
+  vaultSelect.addEventListener('change', () => {
+    loginError.textContent = '';
+  });
 });
+
+function loadVaultOptions(vaults) {
+  const defaultOption = document.createElement('option');
+  defaultOption.value = '';
+  defaultOption.textContent = 'Default Vault';
+  vaultSelect.appendChild(defaultOption);
+
+  vaults.forEach(vault => {
+    const option = document.createElement('option');
+    option.value = vault.path;
+    option.textContent = vault.path;
+    vaultSelect.appendChild(option);
+  });
+}

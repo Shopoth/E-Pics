@@ -2,9 +2,10 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Auth
-  register: (password) => ipcRenderer.invoke('auth:register', password),
-  login: (password) => ipcRenderer.invoke('auth:login', password),
+  register: (password, vaultPath) => ipcRenderer.invoke('auth:register', password, vaultPath),
+  login: (password, vaultPath) => ipcRenderer.invoke('auth:login', password, vaultPath),
   hasPassword: () => ipcRenderer.invoke('auth:hasPassword'),
+  getVaults: () => ipcRenderer.invoke('vaults:getList'),
 
   // Files
   importFiles: (filePaths) => ipcRenderer.invoke('files:import', filePaths),

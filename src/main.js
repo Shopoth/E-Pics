@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu, ipcMain, dialog } = require('electron');
+const fs = require('fs').promises;
 const path = require('path');
 const os = require('os');
 const MetadataManager = require('./utils/metadataManager');
@@ -6,11 +7,68 @@ const FileHandler = require('./utils/fileHandler');
 const PasswordManager = require('./utils/passwordManager');
 
 const VAULT_ROOT = path.join(os.homedir(), '.photohider');
+let VAULTS_CONFIG_PATH;
+let knownVaults = [];
+let currentVaultRoot = VAULT_ROOT;
 let mainWindow;
 let metadataManager;
 let fileHandler;
 let passwordManager;
 let isAuthenticated = false;
+
+async function loadVaultConfig() {
+  try {
+    const data = await fs.readFile(VAULTS_CONFIG_PATH, 'utf8');
+    const parsed = JSON.parse(data);
+    knownVaults = Array.isArray(parsed)
+      ? parsed.filter(v => v && v.path).map(v => ({ path: path.resolve(v.path) }))
+      : [];
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      knownVaults = [];
+    } else {
+      console.error('Failed to load vault config:', error);
+      knownVaults = [];
+    }
+  }
+
+  if (knownVaults.length === 0) {
+    try {
+      await fs.access(path.join(VAULT_ROOT, 'metadata.json'));
+      await addVaultPath(VAULT_ROOT);
+    } catch (error) {
+      // default vault not present; ignore
+    }
+  }
+}
+
+async function saveVaultConfig() {
+  await fs.mkdir(path.dirname(VAULTS_CONFIG_PATH), { recursive: true });
+  await fs.writeFile(VAULTS_CONFIG_PATH, JSON.stringify(knownVaults, null, 2), 'utf8');
+}
+
+async function addVaultPath(vaultPath) {
+  const resolvedPath = path.resolve(vaultPath);
+  if (!knownVaults.some(v => v.path === resolvedPath)) {
+    knownVaults.push({ path: resolvedPath });
+    await saveVaultConfig();
+  }
+}
+
+async function initializeVaultManagers(vaultPath) {
+  currentVaultRoot = path.resolve(vaultPath);
+  metadataManager = new MetadataManager(currentVaultRoot);
+  fileHandler = new FileHandler(currentVaultRoot, metadataManager);
+  passwordManager = new PasswordManager(metadataManager);
+}
+
+async function ensureVaultDirectory(vaultPath) {
+  try {
+    await fs.mkdir(vaultPath, { recursive: true });
+  } catch (error) {
+    throw new Error('Unable to create vault directory: ' + error.message);
+  }
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -40,12 +98,10 @@ function createWindow() {
 }
 
 app.on('ready', async () => {
-  // Initialize vault and managers
-  metadataManager = new MetadataManager(VAULT_ROOT);
-  fileHandler = new FileHandler(VAULT_ROOT, metadataManager);
-  passwordManager = new PasswordManager(metadataManager);
+  VAULTS_CONFIG_PATH = path.join(app.getPath('userData'), 'vaults.json');
+  await loadVaultConfig();
 
-  // Ensure vault directory exists
+  await initializeVaultManagers(VAULT_ROOT);
   await fileHandler.ensureVaultExists();
 
   createWindow();
@@ -69,14 +125,19 @@ function createMenu() {
 }
 
 // IPC Handlers
-ipcMain.handle('auth:register', async (event, password) => {
+ipcMain.handle('auth:register', async (event, password, vaultPath) => {
   try {
-    const hasPassword = await passwordManager.hasPassword();
-    if (hasPassword) {
-      return { success: false, error: 'A vault already exists. Please login instead.' };
+    const pathToUse = path.resolve(vaultPath || VAULT_ROOT);
+    await ensureVaultDirectory(pathToUse);
+    await initializeVaultManagers(pathToUse);
+    await metadataManager.loadMetadata();
+
+    if (metadataManager.getPasswordHash()) {
+      return { success: false, error: 'Vault already exists at this location. Please login instead.' };
     }
 
     await passwordManager.setPassword(password);
+    await addVaultPath(pathToUse);
     isAuthenticated = true;
     return { success: true };
   } catch (error) {
@@ -84,10 +145,19 @@ ipcMain.handle('auth:register', async (event, password) => {
   }
 });
 
-ipcMain.handle('auth:login', async (event, password) => {
+ipcMain.handle('auth:login', async (event, password, vaultPath) => {
   try {
+    const pathToUse = path.resolve(vaultPath || (knownVaults.length > 0 ? knownVaults[0].path : VAULT_ROOT));
+    await initializeVaultManagers(pathToUse);
+    await metadataManager.loadMetadata();
+
+    if (!metadataManager.getPasswordHash()) {
+      return { success: false, error: 'Selected vault does not have a password set.' };
+    }
+
     const isValid = await passwordManager.verifyPassword(password);
     if (isValid) {
+      await addVaultPath(pathToUse);
       isAuthenticated = true;
       return { success: true };
     } else {
@@ -99,7 +169,11 @@ ipcMain.handle('auth:login', async (event, password) => {
 });
 
 ipcMain.handle('auth:hasPassword', async () => {
-  return await passwordManager.hasPassword();
+  return knownVaults.length > 0;
+});
+
+ipcMain.handle('vaults:getList', async () => {
+  return knownVaults;
 });
 
 ipcMain.handle('files:import', async (event, filePaths) => {
@@ -270,7 +344,7 @@ ipcMain.handle('password:change', async (event, oldPassword, newPassword) => {
 });
 
 ipcMain.handle('settings:getStoragePath', async () => {
-  return { success: true, path: VAULT_ROOT };
+  return { success: true, path: currentVaultRoot || VAULT_ROOT };
 });
 
 ipcMain.handle('files:pickDirectory', async (event) => {

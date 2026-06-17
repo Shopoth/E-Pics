@@ -17,6 +17,10 @@
 
       <div id="loginForm" class="space-y-6">
         <h2 class="text-xl font-semibold text-slate-50">Login</h2>
+        <div id="vaultSelection" class="space-y-3 hidden">
+          <label for="vaultSelect" class="block text-sm font-medium text-slate-300">Select Vault</label>
+          <select id="vaultSelect" class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20"></select>
+        </div>
         <div class="space-y-3">
           <label for="loginPassword" class="block text-sm font-medium text-slate-300">Password</label>
           <input type="password" id="loginPassword" placeholder="Enter your password" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
@@ -29,6 +33,14 @@
 
       <div id="registerForm" class="space-y-6 hidden">
         <h2 class="text-xl font-semibold text-slate-50">Create Your Vault</h2>
+        <div class="space-y-3">
+          <label for="registerVaultPath" class="block text-sm font-medium text-slate-300">Vault Location</label>
+          <div class="flex gap-3">
+            <input type="text" id="registerVaultPath" placeholder="Choose vault folder or leave blank for default" class="flex-1 rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
+            <button id="chooseVaultPathBtn" type="button" class="rounded-2xl border border-slate-700 bg-slate-800/90 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-slate-700">Browse</button>
+          </div>
+          <p class="text-sm text-slate-500">Leave blank to use the default vault folder.</p>
+        </div>
         <div class="space-y-3">
           <label for="registerPassword" class="block text-sm font-medium text-slate-300">Create Password</label>
           <input type="password" id="registerPassword" placeholder="Choose a password" required class="w-full rounded-2xl border border-slate-700 bg-slate-950/90 px-4 py-3 text-slate-100 placeholder:text-slate-500 focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-500/20" />
